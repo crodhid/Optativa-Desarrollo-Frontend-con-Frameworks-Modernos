@@ -1,0 +1,127 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Component Botón Vanilla</title>
+</head>
+
+<body>
+    <h1>Ejemplo de Web Component: &lt;mi-boton&gt;</h1>
+    <!-- Usando nuestro Web Component -->
+    <mi-boton variant="primary" size="medium">¡Haz clic aquí!</mi-boton>
+    <mi-boton variant="danger" size="large">Eliminar cuenta</mi-boton>
+    <mi-boton variant="outline" size="small">Cancelar</mi-boton>
+    <script>
+        // Definición del Web Component
+        class MiBoton extends HTMLElement {
+            constructor() {
+                super();
+                // Creamos el Shadow DOM para encapsular estilos y estructura
+                this.attachShadow({ mode: 'open' });
+            }
+            // Observamos cambios en ciertos atributos para reaccionar a ellos
+            static get observedAttributes() {
+                return ['variant', 'size', 'disabled'];
+            }
+            // Se ejecuta cuando el componente se añade al DOM
+            connectedCallback() {
+                this.render();
+            }
+            // Se ejecuta cuando cambia alguno de los atributos observados
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    this.render();
+                }
+            }
+            // Plantilla HTML y CSS internos del componente
+            render() {
+                // Obtenemos los valores de los atributos
+                const variant = this.getAttribute('variant') || 'primary';
+                const size = this.getAttribute('size') || 'medium';
+                const isDisabled = this.hasAttribute('disabled');
+                this.shadowRoot.innerHTML = `
+<style>
+/* --- CSS del Componente --- */
+:host {
+display: inline-block;
+font-family: system-ui, -apple-system, sans-serif;
+}
+button {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-family: inherit;
+font-weight: 500;
+border-radius: 8px;
+border: 1px solid transparent;
+cursor: pointer;
+transition: background-color 0.2s, transform 0.1s, box-shadow
+0.2s;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+outline: none;
+}
+button:active:not(:disabled) {
+transform: scale(0.97);
+}
+button:focus-visible {
+box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+/* --- Tamaños (Sizes) --- */
+.size-small {
+padding: 6px 12px;
+font-size: 12px;
+}
+.size-medium {
+padding: 10px 18px;
+font-size: 14px;
+}
+.size-large {
+padding: 14px 24px;
+font-size: 16px;
+}
+/* --- Variantes (Variants) --- */
+.variant-primary {
+background-color: #3b82f6;
+color: white;
+}
+.variant-primary:hover:not(:disabled) {
+background-color: #2563eb;
+}
+.variant-danger {
+background-color: #ef4444;
+color: white;
+}
+.variant-danger:hover:not(:disabled) {
+background-color: #dc2626;
+}
+.variant-outline {
+background-color: transparent;
+border-color: #d1d5db;
+color: #374151;
+}
+.variant-outline:hover:not(:disabled) {
+background-color: #f3f4f6;
+}
+/* --- Estado Deshabilitado --- */
+button:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+box-shadow: none;
+}
+</style>
+<!-- HTML interno del componente -->
+<button
+class="variant-${variant} size-${size}"
+${isDisabled ? 'disabled' : ''}>
+<slot>Botón</slot>
+</button>
+`;
+            }
+        }
+        // Registrar el componente personalizado en el navegador
+        customElements.define('mi-boton', MiBoton);
+    </script>
+</body>
+
+</html>
