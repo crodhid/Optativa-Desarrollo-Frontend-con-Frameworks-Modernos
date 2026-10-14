@@ -57,4 +57,29 @@ if (h11 != undefined) {
 // En JavaScript/TypeScript dividir entre 0 NO da error:
 // devuelve Infinity (infinito)
 console.log(10 / 0); // Imprime Infinity
+/**
+ * Funcion que tiene un parametro implicito es decir, que le puede llegar o no el parámetro
+ * si le llega el parametro en true devuelve el nombre, si no le llega o le llega en falso devuelve
+ * la cantidad
+ * @param name
+ * @param cantidad
+ * @param activo
+ * @returns
+ */
+function valores(name, cantidad, activo) {
+    if (activo) {
+        return name;
+    }
+    else
+        return cantidad;
+}
+/**
+ * prueba de mi funcion anterior
+ */
+if (h11) {
+    h11.innerHTML = "";
+    h11.innerHTML += valores("Pepe", 12) + "<br>";
+    h11.innerHTML += valores("Antonio", 15, true) + "<br>";
+    h11.innerHTML += valores("Manolo", 25, false);
+}
 //# sourceMappingURL=main.js.map

@@ -28,19 +28,19 @@ for (let elem of myArray) {
  * no se puede modificar esa propiedad.
  */
 type Car = {
-    matricula : string,     // texto
-    modelo : string,        // texto
-    itv_pasada : boolean,   // verdadero o falso
-    readonly color : string // solo lectura: no se puede reasignar
+    matricula: string,     // texto
+    modelo: string,        // texto
+    itv_pasada: boolean,   // verdadero o falso
+    readonly color: string // solo lectura: no se puede reasignar
 }
 
 // Se crea un objeto que cumple el tipo Car.
 // Si faltara una propiedad o tuviera un tipo incorrecto, daría error.
-var car1 : Car = {
-    matricula:"1234hed",
-    modelo:"Mustang",
-    itv_pasada : true,
-    color : "Azul"
+var car1: Car = {
+    matricula: "1234hed",
+    modelo: "Mustang",
+    itv_pasada: true,
+    color: "Azul"
 }
 // car1.color = "Rojo";  // ERROR: color es readonly
 
@@ -69,12 +69,12 @@ console.dir(person1);
 // Esto es una TUPLA: un array con longitud fija donde cada posición
 // tiene un tipo concreto y el orden importa:
 // [string, string, number, boolean]
-var Alumn : [string, string, number, boolean]= ["Ana","Pérez", 19, true];
+var Alumn: [string, string, number, boolean] = ["Ana", "Pérez", 19, true];
 
 // "unknown" es un tipo seguro para valores de tipo desconocido.
 // Se puede asignar cualquier valor, pero antes de usarlo como un tipo
 // concreto hay que comprobar su tipo (a diferencia de "any").
-var desconocido : unknown;
+var desconocido: unknown;
 desconocido = 5;
 console.log(desconocido); // Imprime 5
 
@@ -90,3 +90,29 @@ if (h11 != undefined) {
 // En JavaScript/TypeScript dividir entre 0 NO da error:
 // devuelve Infinity (infinito)
 console.log(10 / 0); // Imprime Infinity
+
+/**
+ * Funcion que tiene un parametro implicito es decir, que le puede llegar o no el parámetro
+ * si le llega el parametro en true devuelve el nombre, si no le llega o le llega en falso devuelve 
+ * la cantidad
+ * @param name 
+ * @param cantidad 
+ * @param activo 
+ * @returns 
+ */
+function valores(name: string, cantidad: number, activo?: boolean): string | number {
+    if (activo) {
+        return name;
+    } else
+        return cantidad;
+}
+
+/**
+ * prueba de mi funcion anterior
+ */
+if (h11) {
+    h11.innerHTML = "";
+    h11.innerHTML += valores("Pepe", 12) + "<br>";
+    h11.innerHTML += valores("Antonio", 15, true) + "<br>";
+    h11.innerHTML += valores("Manolo", 25, false);
+}
