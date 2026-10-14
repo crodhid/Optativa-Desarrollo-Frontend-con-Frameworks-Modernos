@@ -1,55 +1,40 @@
+// Importamos serveDir: una función que entrega los archivos de una carpeta
+// (index.html, main.js, styles.css) al navegador.
 import { serveDir } from "@std/http/file-server";
 
-// Estructura de una tarea
-interface Tarea {
-  id: number;
-  texto: string;
-  hecha: boolean;
-}
+// Lista donde guardamos las tareas. Cada tarea es un texto.
+// Está en memoria: al reiniciar el servidor, se vacía.
+const tareas: string[] = [];
 
-// "Base de datos" en memoria (se pierde al reiniciar el servidor)
-let tareas: Tarea[] = [];
-let siguienteId = 1;
-
+// Esta función atiende cada petición que llega al servidor.
+// Se exporta para poder usarla en main_test.ts.
 export async function handler(req: Request): Promise<Response> {
+  // Sacamos la ruta que pide el navegador (por ejemplo "/api/tareas")
   const url = new URL(req.url);
 
-  // GET /api/tareas -> lista todas las tareas
+  // Si piden la lista (método GET), la devolvemos en formato JSON
   if (url.pathname === "/api/tareas" && req.method === "GET") {
     return Response.json(tareas);
   }
 
-  // POST /api/tareas -> crea una tarea nueva
+  // Si quieren añadir una tarea (método POST)
   if (url.pathname === "/api/tareas" && req.method === "POST") {
-    const { texto } = await req.json();
-    const nueva: Tarea = { id: siguienteId++, texto, hecha: false };
-    tareas.push(nueva);
-    return Response.json(nueva, { status: 201 });
+    // Leemos los datos que envía el navegador: { "texto": "..." }
+    const datos = await req.json();
+
+    // Guardamos el texto en la lista
+    tareas.push(datos.texto);
+
+    // Respondemos con el código 201, que significa "creado"
+    return new Response("Tarea creada", { status: 201 });
   }
 
-  // PUT y DELETE /api/tareas/:id -> modifican una tarea concreta
-  const coincidencia = url.pathname.match(/^\/api\/tareas\/(\d+)$/);
-  if (coincidencia) {
-    const id = Number(coincidencia[1]);
-
-    if (req.method === "PUT") {
-      const tarea = tareas.find((t) => t.id === id);
-      if (!tarea) return new Response("No encontrada", { status: 404 });
-      tarea.hecha = !tarea.hecha; // alterna completada / pendiente
-      return Response.json(tarea);
-    }
-
-    if (req.method === "DELETE") {
-      tareas = tareas.filter((t) => t.id !== id);
-      return new Response(null, { status: 204 });
-    }
-  }
-
-  // Cualquier otra ruta: sirve los archivos de la carpeta static/
+  // Para cualquier otra ruta, entregamos la página desde la carpeta "static"
   return serveDir(req, { fsRoot: "static" });
 }
 
-// Solo arranca el servidor si se ejecuta este archivo directamente
+// Esto arranca el servidor solo cuando ejecutamos este archivo directamente
+// (no cuando lo importa main_test.ts).
 if (import.meta.main) {
   Deno.serve(handler);
 }

@@ -1,37 +1,26 @@
 // assertEquals compara dos valores: si son distintos, la prueba falla.
-// "@std/assert" está definido en la sección "imports" de deno.json.
 import { assertEquals } from "@std/assert";
 
-// Importamos handler, la función del servidor, para probarla directamente
-// sin necesidad de arrancar el servidor ni abrir ningún puerto.
+// Importamos la función del servidor para probarla
 import { handler } from "./main.ts";
 
-// Deno.test define una prueba: primero su nombre (aparece en la terminal)
-// y después la función con el código a comprobar.
-// Es async porque dentro usamos await.
+// Deno.test crea una prueba: un nombre y el código que se ejecuta
 Deno.test("POST crea una tarea y GET la devuelve", async () => {
-  // ---------- Paso 1: crear una tarea ----------
-  // Construimos a mano la misma petición que haría el navegador al pulsar "Añadir"
-  // y se la pasamos a handler. La URL solo necesita la ruta correcta.
+  // Paso 1: simulamos que el navegador añade la tarea "Estudiar Deno"
   const crear = await handler(
     new Request("http://localhost/api/tareas", {
-      method: "POST", // método HTTP para crear
-      body: JSON.stringify({ texto: "Estudiar Deno" }), // cuerpo en formato JSON
+      method: "POST",
+      body: JSON.stringify({ texto: "Estudiar Deno" }),
     }),
   );
 
-  // Comprobamos que el servidor respondió 201 ("creado").
-  // Si devolviera otro código, la prueba fallaría aquí.
+  // Comprobamos que el servidor respondió 201 (creado)
   assertEquals(crear.status, 201);
 
-  // ---------- Paso 2: comprobar que la tarea aparece en la lista ----------
-  // Pedimos la lista con una petición GET (el método por defecto de Request).
-  // El primer await obtiene la respuesta; el segundo, .json(), lee su contenido.
-  const lista = await (
-    await handler(new Request("http://localhost/api/tareas"))
-  ).json();
+  // Paso 2: pedimos la lista de tareas (GET)
+  const respuesta = await handler(new Request("http://localhost/api/tareas"));
+  const lista = await respuesta.json();
 
-  // La lista empieza vacía, así que la tarea creada está en la posición 0.
-  // Comprobamos que su texto es el que enviamos.
-  assertEquals(lista[0].texto, "Estudiar");
+  // Comprobamos que la primera tarea de la lista es la que añadimos
+  assertEquals(lista[0], "Estudiar Deno");
 });
