@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite'
 export default defineConfig({
     server: {
-        port: 5173,         //Puerto del servidor de desarrollo
+        port: 3000,         //Puerto del servidor de desarrollo
         open : true,        //abre el navegador al arrancar
     },
     build: {
