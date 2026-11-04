@@ -1,0 +1,19 @@
+button{
+    padding: 0.5%;
+    margin: 0.2% 0.2%;
+    cursor: pointer;
+    border: none;
+    border-radius: 15px;
+    background-color: aquamarine;
+    color: black;
+}
+
+button:hover{
+    background-color: rgb(2, 104, 70);
+    color: white;
+}
+
+h5{
+    color: gray;
+    font-weight: bolder;
+}
