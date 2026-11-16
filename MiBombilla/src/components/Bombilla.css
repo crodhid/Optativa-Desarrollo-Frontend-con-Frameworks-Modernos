@@ -1,0 +1,18 @@
+.general{
+   text-align: center; 
+}
+
+.apagada,.encendida{
+    margin: 0 auto;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+.apagada{
+    background-color: #666;
+
+}
+.encendida{
+    background-color: yellow;
+}
